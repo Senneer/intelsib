@@ -4,7 +4,6 @@ body {
 }
 
 .order-btn {
-  display: none;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -25,6 +24,7 @@ body {
 }
 
 .overlay {
+  display: none;
   position: fixed;
   top: 0;
   right: 0;
@@ -45,7 +45,17 @@ body {
   background: #ffffff;
   border-radius: 12px;
 }
+.message._success {
+  display: none;
+  border: 1px solid #000000;
+}
+.message._error {
+  display: none;
+  margin-top: -80px;
+  border: 1px solid #000000;
+}
 .message__title {
+  box-sizing: border-box;
   display: block;
   width: 100%;
   height: 60px;
@@ -55,6 +65,16 @@ body {
   text-align: center;
   background: #59aaff;
   border-radius: 12px 12px 0 0;
+}
+.message__title._success {
+  padding: 0 15px;
+  text-align: left;
+  background: #00aa00;
+}
+.message__title._error {
+  padding: 0 15px;
+  text-align: left;
+  background: #aa0000;
 }
 .message__close-btn {
   position: absolute;
@@ -67,8 +87,19 @@ body {
           transform: scale(1.3);
   cursor: pointer;
 }
+.message__close-btn._close-success {
+  top: -22px;
+  right: -20px;
+}
+.message__close-btn._close-error {
+  right: 320px;
+}
+.message__text {
+  padding: 0 15px;
+}
 
 .form {
+  position: relative;
   font: 14px Arial, sans-serif;
 }
 .form__input {
@@ -94,4 +125,29 @@ body {
 .form__submit:hover {
   background: #bb2c2c;
   cursor: pointer;
+}
+
+#name-error,
+#phone-error,
+#email-error {
+  position: absolute;
+  top: 25px;
+  right: 20px;
+  color: #ee0000;
+}
+
+#phone-error {
+  top: 70px;
+}
+
+#email-error {
+  top: 115px;
+}
+
+@media screen and (max-width: 380px) {
+  .message__close-btn._close-success,
+  .message__close-btn._close-error {
+    top: 22px;
+    right: 20px;
+  }
 }

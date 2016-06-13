@@ -30,7 +30,7 @@ gulp.task('js', function() {
 
 //css
 gulp.task('css', function() {
-  var processors = [autoprefixer({browsers: ['last 3 version', 'ie 10', 'ie 11']}), flexbugs];
+  var processors = [autoprefixer({browsers: ['last 3 version', 'ie 9', 'ie 10', 'ie 11']}), flexbugs];
   return gulp.src('./scss/main.scss')
   .pipe(sass().on('error', sass.logError))
   .pipe(postcss(processors))

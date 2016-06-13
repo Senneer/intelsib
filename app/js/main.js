@@ -1,60 +1,111 @@
 'use strict';
 
-var logininput = Array.prototype.slice.call(document.getElementsByClassName('login__formFieldInput'));
-var container = document.getElementsByClassName('container')[0];
-var loginSubmit = document.getElementsByClassName('login__formSubmit')[0];
-var successmsg = document.getElementsByClassName('successmsg')[0];
-var checkmark = document.getElementsByClassName('successmsg__checkmarkPath')[0];
+var feedback = function feedback() {
+  var selectors = {
+    name: $('.form__input._name'),
+    phone: $('.form__input._phone'),
+    email: $('.form__input._email'),
+    submit: $('.form__submit'),
+    form: $('.form')
+  };
 
-function animation() {
-  successmsg.classList.toggle('_is-up');
-  checkmark.classList.toggle('_animation');
-  setTimeout('successmsg.classList.remove("_is-up")', 2000);
-  setTimeout('checkmark.classList.remove("_animation")', 2000);
-}
-container.addEventListener('click', function (e) {
-  return e.stopPropagation();
-});
+  var buttons = {
+    order: $('.order-btn'),
+    close: $('.message__close-btn._close'),
+    closeSuccess: $('.message__close-btn._close-success'),
+    closeError: $('.message__close-btn._close-error')
+  };
 
-logininput.forEach(function (item) {
-  item.addEventListener('change', function () {
-    if (item.value != '') {
-      if (item.classList.contains('_notempty') === false) {
-        item.classList.add('_notempty');
-      }
-    } else {
-      item.className = item.className.replace(' _notempty', '');
-    };
+  var windows = {
+    overlay: $('.overlay'),
+    message: $('.message._main'),
+    messageSuccess: $('.message._success'),
+    messageError: $('.message._error')
+  };
+
+  windows.message.on('click', function (e) {
+    e.stopPropagation();
   });
-});
 
-var signupToggle = document.getElementsByClassName('_signup')[0];
-var loginToggle = document.getElementsByClassName('_login')[0];
-var signup = document.getElementsByClassName('signUp')[0];
-var login = document.getElementsByClassName('login')[0];
+  buttons.order.on('click', function () {
+    windows.overlay.fadeIn();
+    windows.message.fadeIn();
+  });
 
-signupToggle.addEventListener('click', function () {
-  login.style.display = 'none';
-  signup.style.display = 'block';
-});
+  buttons.close.on('click', function () {
+    windows.overlay.fadeOut();
+  });
 
-loginToggle.addEventListener('click', function () {
-  signup.style.display = 'none';
-  login.style.display = 'block';
-});
+  buttons.closeSuccess.on('click', function () {
+    windows.messageSuccess.fadeOut();
+  });
 
-document.getElementsByClassName("signUp__signbtn")[0].addEventListener("click", function (event) {
-  event.preventDefault();
-  animation();
-});
-document.getElementsByClassName("_fb")[0].addEventListener("click", function (event) {
-  event.preventDefault();
-});
-document.getElementsByClassName("_google")[0].addEventListener("click", function (event) {
-  event.preventDefault();
-});
+  buttons.closeError.on('click', function () {
+    windows.messageError.fadeOut();
+    windows.overlay.on('click', function () {
+      windows.overlay.fadeOut();
+    });
+    windows.messageError.on('click', function (e) {
+      e.stopPropagation();
+    });
+  });
 
-loginSubmit.addEventListener('click', function (event) {
-  event.preventDefault();
-  animation();
+  windows.overlay.on('click', function () {
+    windows.overlay.fadeOut();
+    windows.messageSuccess.fadeOut();
+  });
+
+  selectors.phone.mask('+7 (000) 000 00 00');
+
+  selectors.form.validate({
+    rules: {
+      name: "required",
+      phone: {
+        required: true,
+        minlength: 18
+      },
+      email: {
+        required: true,
+        email: true
+      }
+    },
+    messages: {
+      name: "Заполните поле!",
+      phone: {
+        required: "Заполните поле!",
+        minlength: "Некорректный номер телефона!"
+      },
+      email: {
+        required: "Заполните поле!",
+        email: "Некорректный email!"
+      }
+    }
+  });
+
+  selectors.form.on('submit', function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      datType: 'json',
+      url: './mail.php',
+      data: {
+        name: selectors.name.val(),
+        phone: selectors.phone.val(),
+        email: selectors.email.val()
+      },
+      success: function success(data) {
+        if (data.status === true) {
+          windows.message.fadeOut();
+          windows.messageSuccess.fadeIn();
+        } else {
+          windows.overlay.unbind('click');
+          windows.messageError.fadeIn();
+        }
+      }
+    });
+  });
+};
+
+$(document).ready(function () {
+  feedback();
 });
