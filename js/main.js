@@ -84,7 +84,7 @@ const feedback = function() {
     e.preventDefault();
     $.ajax({
       type: 'POST',
-      datType: 'json',
+      dataType: 'json',
       url: './mail.php',
       data: {
         name: selectors.name.val(),
